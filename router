@@ -1,0 +1,25 @@
+#!/bin/bash
+aws elbv2 describe-listeners --load-balancer-arn $ex_lb_arn > curState.json
+query=".Listeners[0].DefaultActions[0].ForwardConfig.TargetGroups["
+if [ $(jq ".Listeners[0].DefaultActions[0].ForwardConfig.TargetGroups[0].Weight" curState.json ) == 0 ]
+then
+	query+="0].TargetGroupArn"
+else
+	query+="1].TargetGroupArn"
+fi
+
+atRest=$(jq "$query" curState.json -r)
+targetDir="$(pwd)"
+if [ "$atRest" == "$UI_tg1" ]
+then
+	targetDir+="/t1/"
+else
+	targetDir+="/t2/"
+fi
+
+for exc in "p1" "interval" "p2"
+do
+	tmp=$targetDir$exc
+	bash $tmp
+done
+

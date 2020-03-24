@@ -1,0 +1,24 @@
+{
+    "ListenerArn": "arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:listener/app/CRBS-external/427a643a7ae9d454/ecc63cfc5dd79ae0",
+    "DefaultActions": [
+        {
+            "Type": "forward",
+            "ForwardConfig": {
+                "TargetGroups": [
+                    {
+                        "TargetGroupArn": "arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-UI2/56cd30c77685a61b",
+                        "Weight": 1
+                    },
+		    {
+			"TargetGroupArn": "arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/crbs-ui-g/c502fb2c33ce474d",
+			"Weight": 1
+		    }
+                ],
+                "TargetGroupStickinessConfig": {
+                    "Enabled": true,
+                    "DurationSeconds": 120
+                }
+            }
+        }
+    ]
+}

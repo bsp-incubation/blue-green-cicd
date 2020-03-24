@@ -1,0 +1,26 @@
+{
+    "LoadBalancerArn": "arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:loadbalancer/app/CRBS-external/427a643a7ae9d454",
+    "Protocol": "HTTP",
+    "Port": 8080,
+    "DefaultActions": [
+        {
+            "Type": "forward",
+            "ForwardConfig": {
+                "TargetGroups": [
+                    {
+                        "TargetGroupArn": "arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/crbs-ui-g/c502fb2c33ce474d",
+                        "Weight": 1
+                    },
+		    {
+			"TargetGroupArn": "arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-UI2/56cd30c77685a61b",
+			"Weight": 1
+		    }
+                ],
+                "TargetGroupStickinessConfig": {
+                    "Enabled": true,
+                    "DurationSeconds": 600
+                }
+            }
+        }
+    ]
+}
