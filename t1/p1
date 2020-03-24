@@ -1,5 +1,8 @@
 #!/bin/bash
 #FRONT DEPLOY
+dg_UI1="CRBS-UI-deployment-group1"
+dg_API1="CRBS-API-deployment-group1"
+
 aws deploy create-deployment --application-name CRBS-codedeploy-app --deployment-group-name $dg_UI1 --s3-location bundleType="tar",bucket="landingproject",key=front.tar --file-exists-behavior "OVERWRITE" > uiDeployment.json
 
 #BACK DEPLOY
