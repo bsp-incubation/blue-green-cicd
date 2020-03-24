@@ -1,10 +1,16 @@
 #!/bin/bash
 #Generate front and back AWS CLI JSON input files
-jq --arg fl frontListener --arg tg1 $UI_tg1 --arg tg2 $UI_tg2 -n '{"LoadBalancerArn":$fl,"Protocol":"HTTP","Port":0,"DefaultActions":[{"Type":"forward","ForwardConfig":{"TargetGroups":[{"TargetGroupArn":$tg1,"Weight":1},{"TargetGroupArn":$tg2,"Weight":0}],"TargetGroupStickinessConfig":{"Enabled":true,"DurationSeconds":120}}}]}' > createFrontListener.json
-jq --arg fl backListener --arg tg1 $API_tg1 --arg tg2 $API_tg2 -n '{"LoadBalancerArn":$fl,"Protocol":"HTTP","Port":0,"DefaultActions":[{"Type":"forward","ForwardConfig":{"TargetGroups":[{"TargetGroupArn":$tg1,"Weight":1},{"TargetGroupArn":$tg2,"Weight":0}],"TargetGroupStickinessConfig":{"Enabled":true,"DurationSeconds":120}}}]}' > createBackListener.json
+#ex_lb_arn="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:loadbalancer/app/CRBS-external/9ce126d430281b7f"
+#in_lb_arn="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:loadbalancer/app/CRBS-internal/d1d43ba0a47996eb"
+#UI_tg1="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-UI1/bcb1a0c8b45eb26d"
+#UI_tg2="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-UI2/4d574f08449e4f40"
+#API_tg1="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-API1/9cadb0002e6044a7"
+#API_tg2="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-API2/c01da62ed492148c"
+jq --arg flb $ex_lb_arn --arg tg1 $UI_tg1 --arg tg2 $UI_tg2 -n '{"LoadBalancerArn":$flb,"Protocol":"HTTP","Port":8080,"DefaultActions":[{"Type":"forward","ForwardConfig":{"TargetGroups":[{"TargetGroupArn":$tg1,"Weight":1},{"TargetGroupArn":$tg2,"Weight":0}],"TargetGroupStickinessConfig":{"Enabled":true,"DurationSeconds":120}}}]}' > createFrontListener.json
+jq --arg blb $in_lb_arn --arg tg1 $API_tg1 --arg tg2 $API_tg2 -n '{"LoadBalancerArn":$blb,"Protocol":"HTTP","Port":8090,"DefaultActions":[{"Type":"forward","ForwardConfig":{"TargetGroups":[{"TargetGroupArn":$tg1,"Weight":1},{"TargetGroupArn":$tg2,"Weight":0}],"TargetGroupStickinessConfig":{"Enabled":true,"DurationSeconds":120}}}]}' > createBackListener.json
 
-aws elbv2 create-listener --cli-input-json createFrontListener.json > frontListenerOutput.json
-aws elbv2 create-listener --cli-input-json createBackListener.json > backListenerOutput.json
+aws elbv2 create-listener --cli-input-json file://createFrontListener.json > frontListenerOutput.json
+aws elbv2 create-listener --cli-input-json file://createBackListener.json > backListenerOutput.json
 
 #front listener arn
 jq ".Listeners[0].ListenerArn" frontListenerOutput.json -r
