@@ -19,9 +19,10 @@ else
 	targetDir+="/t2/"
 fi
 
-for exc in "p1" "interval" "p2"
-do
-	tmp=$targetDir$exc
-	bash $tmp
-done
+echo $targetDir > targetDir
+#for exc in "p1" "interval" "p2"
+#do
+#	tmp=$targetDir$exc
+#	bash $tmp
+#done
 
