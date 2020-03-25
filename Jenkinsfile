@@ -16,10 +16,10 @@ rm ./tmpScript'''
         sh '''cd /var/lib/jenkins/workspace
 targetDir="$(cat ./targetDir)p1"
 echo $targetDir
-cat ids.sh $targetDir > tmpScript
-chmod 777 tmpScript
-bash ./tmpScript
-rm ./tmpScript'''
+cat ids.sh $targetDir > p1Script
+chmod 777 p1Script
+bash ./p1Script
+'''
       }
     }
 
@@ -27,10 +27,9 @@ rm ./tmpScript'''
       steps {
         sh '''cd /var/lib/jenkins/workspace
 targetDir="$(cat ./targetDir)interval"
-cat ids.sh $targetDir > tmpScript
-chmod 777 tmpScript
-bash ./tmpScript
-rm ./tmpScript'''
+cat ids.sh $targetDir > intervalScript
+chmod 777 intervalScript
+bash ./intervalScript'''
       }
     }
 
@@ -38,17 +37,19 @@ rm ./tmpScript'''
       steps {
         sh '''cd /var/lib/jenkins/workspace
 targetDir="$(cat ./targetDir)p2"
-cat ids.sh $targetDir > tmpScript
-chmod 777 tmpScript
-bash ./tmpScript
-rm ./tmpScript'''
+cat ids.sh $targetDir > p2Script
+chmod 777 p2Script
+bash ./p2Script'''
       }
     }
 
     stage('Clean Up') {
       steps {
         sh '''cd /var/lib/jenkins/workspace
-rm ./targetDir'''
+rm ./targetDir
+rm ./p1Script
+rm ./intervalScript
+rm ./p2Script'''
       }
     }
 
