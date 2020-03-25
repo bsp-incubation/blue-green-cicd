@@ -15,8 +15,8 @@ rm ./tmpScript'''
       steps {
         sh '''cd /var/lib/jenkins/workspace
 targetDir="$(cat ./targetDir)"
-cat $targetDir
 targetDir+="p1"
+echo $targetDir
 cat ids.sh $targetDir > tmpScript
 chmod 777 tmpScript
 bash ./tmpScript
