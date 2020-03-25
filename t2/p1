@@ -1,6 +1,6 @@
 #!/bin/bash
 #FRONT DEPLOY
-aws deploy create-deployment --application-name CRBS-codedeploy-app --deployment-group-name $dg_UI2 --s3-location bundleType="tar",bucket="landingproject",key=front.tar --file-exists-behavior "OVERWRITE" > uiDeployment.json
+aws deploy create-deployment --application-name CRBS-codedeploy-app --deployment-group-name $dg_UI2 --s3-location bundleType="tar",bucket="landingproject",key=front.tar --file-exists-behavior "OVERWRITE" > /var/lib/jenkins/workspace/uiDeployment.json
 
 #BACK DEPLOY
-aws deploy create-deployment --application-name CRBS-codedeploy-app --deployment-group-name $dg_API2 --s3-location bundleType="tar",bucket="landingproject",key=back.tar --file-exists-behavior "OVERWRITE" > apiDeployment.json
+aws deploy create-deployment --application-name CRBS-codedeploy-app --deployment-group-name $dg_API2 --s3-location bundleType="tar",bucket="landingproject",key=back.tar --file-exists-behavior "OVERWRITE" > /var/lib/jenkins/workspace/apiDeployment.json

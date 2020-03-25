@@ -1,17 +1,17 @@
 #!/bin/bash
-ex_lb_arn="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:loadbalancer/app/CRBS-external/9ce126d430281b7f"
-UI_tg1="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-UI1/bcb1a0c8b45eb26d"
-aws elbv2 describe-listeners --load-balancer-arn $ex_lb_arn > curState.json
+#ex_lb_arn="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:loadbalancer/app/CRBS-external/9ce126d430281b7f"
+#UI_tg1="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-UI1/bcb1a0c8b45eb26d"
+aws elbv2 describe-listeners --load-balancer-arn $ex_lb_arn > /var/lib/jenkins/workspace/curState.json
 query=".Listeners[0].DefaultActions[0].ForwardConfig.TargetGroups["
-if [ $(jq ".Listeners[0].DefaultActions[0].ForwardConfig.TargetGroups[0].Weight" curState.json ) == 0 ]
+if [ $(jq ".Listeners[0].DefaultActions[0].ForwardConfig.TargetGroups[0].Weight" /var/lib/jenkins/workspace/curState.json ) == 0 ]
 then
 	query+="0].TargetGroupArn"
 else
 	query+="1].TargetGroupArn"
 fi
 
-atRest=$(jq "$query" curState.json -r)
-targetDir="$(pwd)"
+atRest=$(jq "$query" /var/lib/jenkins/workspace/curState.json -r)
+targetDir="/var/lib/jenkins/workspace"
 if [ "$atRest" == "$UI_tg1" ]
 then
 	targetDir+="/t1/"

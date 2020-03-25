@@ -1,14 +1,18 @@
 #!/bin/bash
-UI_tg1="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-UI1/bcb1a0c8b45eb26d"
-UI_tg2="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-UI2/4d574f08449e4f40"
-frontListener="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:listener/app/CRBS-external/9ce126d430281b7f/07faaaaed9beb665"
-API_tg1="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-API1/9cadb0002e6044a7"
-API_tg2="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-API1/9cadb0002e6044a7"
-backListener="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:listener/app/CRBS-internal/d1d43ba0a47996eb/38436c2bd908e6aa"
+#UI_tg1="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-UI1/bcb1a0c8b45eb26d"
+#UI_tg2="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-UI2/4d574f08449e4f40"
+#frontListener="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:listener/app/CRBS-external/9ce126d430281b7f/07faaaaed9beb665"
+#API_tg1="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-API1/9cadb0002e6044a7"
+#API_tg2="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:targetgroup/CRBS-API1/9cadb0002e6044a7"
+#backListener="arn:aws:elasticloadbalancing:ap-northeast-2:144149479695:listener/app/CRBS-internal/d1d43ba0a47996eb/38436c2bd908e6aa"
 #Generate JSON input for AWS CLI
-jq --arg ft1 $UI_tg1 --arg ft2 $UI_tg2 --arg fl $frontListener -n '{"ListenerArn": $fl, "DefaultActions": [{"Type": "forward", "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": $ft1, "Weight": 1}, {"TargetGroupArn": $ft2, "Weight": 0}], "TargetGroupStickinessConfig": {"Enabled": true, "DurationSeconds": 120}}}]}' > frontInput.json
-jq --arg ft1 $API_tg1 --arg ft2 $API_tg2 --arg fl $backListener -n '{"ListenerArn": $fl, "DefaultActions": [{"Type": "forward", "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": $ft1, "Weight": 1}, {"TargetGroupArn": $ft2, "Weight": 0}], "TargetGroupStickinessConfig": {"Enabled": true, "DurationSeconds": 120}}}]}' > backInput.json
+
+frontListener=$(jq ".Listeners[0].ListenerArn" /var/lib/jenkins/workspace/frontListenerOutput.json -r)
+backListener=$(jq ".Listeners[0].ListenerArn" /var/lib/jenkins/workspace/backListenerOutput.json -r)
+
+jq --arg ft1 $UI_tg1 --arg ft2 $UI_tg2 --arg fl $frontListener -n '{"ListenerArn": $fl, "DefaultActions": [{"Type": "forward", "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": $ft1, "Weight": 1}, {"TargetGroupArn": $ft2, "Weight": 0}], "TargetGroupStickinessConfig": {"Enabled": true, "DurationSeconds": 120}}}]}' > /var/lib/jenkins/workspace/frontInput.json
+jq --arg ft1 $API_tg1 --arg ft2 $API_tg2 --arg fl $backListener -n '{"ListenerArn": $fl, "DefaultActions": [{"Type": "forward", "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": $ft1, "Weight": 1}, {"TargetGroupArn": $ft2, "Weight": 0}], "TargetGroupStickinessConfig": {"Enabled": true, "DurationSeconds": 120}}}]}' > /var/lib/jenkins/workspace/backInput.json
 
 #FRONT and BACK listeners config using AWS CLI
-aws elbv2 modify-listener --cli-input-json file://frontInput.json
-aws elbv2 modify-listener --cli-input-json file://backInput.json
+aws elbv2 modify-listener --cli-input-json file://var/lib/jenkins/workspace/frontInput.json
+aws elbv2 modify-listener --cli-input-json file://var/lib/jenkins/workspace/backInput.json
