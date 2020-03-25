@@ -1,9 +1,12 @@
 #!/bin/bash
 
+frontListener=$(jq ".Listeners[0].ListenerArn" /var/lib/jenkins/workspace/frontListenerOutput.json -r)
+backListener=$(jq ".Listeners[0].ListenerArn" /var/lib/jenkins/workspace/backListenerOutput.json -r)
+
 #Generate JSON input for AWS CLI
 jq --arg ft1 $UI_tg1 --arg ft2 $UI_tg2 --arg fl $frontListener -n '{"ListenerArn": $fl, "DefaultActions": [{"Type": "forward", "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": $ft2, "Weight": 1}, {"TargetGroupArn": $ft1, "Weight": 0}], "TargetGroupStickinessConfig": {"Enabled": true, "DurationSeconds": 120}}}]}' > /var/lib/jenkins/workspace/frontInput.json
 jq --arg ft1 $API_tg1 --arg ft2 $API_tg2 --arg fl $backListener -n '{"ListenerArn": $fl, "DefaultActions": [{"Type": "forward", "ForwardConfig": {"TargetGroups": [{"TargetGroupArn": $ft2, "Weight": 1}, {"TargetGroupArn": $ft1, "Weight": 0}], "TargetGroupStickinessConfig": {"Enabled": true, "DurationSeconds": 120}}}]}' > /var/lib/jenkins/workspace/backInput.json
 
 #FRONT and BACK listeners config using AWS CLI
-aws elbv2 modify-listener --cli-input-json file://var/lib/jenkins/workspace/frontInput.json
-aws elbv2 modify-listener --cli-input-json file://var/lib/jenkins/workspace/backInput.json
+aws elbv2 modify-listener --cli-input-json file:///var/lib/jenkins/workspace/frontInput.json
+aws elbv2 modify-listener --cli-input-json file:///var/lib/jenkins/workspace/backInput.json

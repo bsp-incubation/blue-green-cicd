@@ -5,5 +5,5 @@ back_deployment_id=$(jq ".deploymentId" /var/lib/jenkins/workspace/apiDeployment
 while [ $(aws deploy get-deployment --deployment-id $front_deployment_id | jq ".deploymentInfo.status" -r) == "InProgress" -o $(aws deploy get-deployment --deployment-id $back_deployment_id | jq ".deploymentInfo.status" -r) == "InProgress" ]
 do
 	echo "Deploy Not Yet Finished"
-	sleep 5
+        sleep 5
 done

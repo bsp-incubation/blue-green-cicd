@@ -1,9 +1,9 @@
 #!/bin/bash
 front_deployment_id=$(jq ".deploymentId" /var/lib/jenkins/workspace/uiDeployment.json -r)
-back_deployment_id=$(jq ".deploymentId" a/var/lib/jenkins/workspace/piDeployment.json -r)
+back_deployment_id=$(jq ".deploymentId" /var/lib/jenkins/workspace/apiDeployment.json -r)
 
 while [ $(aws deploy get-deployment --deployment-id $front_deployment_id | jq ".deploymentInfo.status" -r) == "InProgress" -o $(aws deploy get-deployment --deployment-id $back_deployment_id | jq ".deploymentInfo.status" -r) == "InProgress" ]
 do
-	echo "Deploy Not Yet Finished"
-	sleep 5
+        echo "Deploy Not Yet Finished"
+        sleep 5
 done

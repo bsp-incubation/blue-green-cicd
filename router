@@ -7,22 +7,19 @@ if [ $(jq ".Listeners[0].DefaultActions[0].ForwardConfig.TargetGroups[0].Weight"
 then
 	query+="0].TargetGroupArn"
 else
-	query+="1].TargetGroupArn"
+        query+="1].TargetGroupArn"
 fi
-
 atRest=$(jq "$query" /var/lib/jenkins/workspace/curState.json -r)
 targetDir="/var/lib/jenkins/workspace"
 if [ "$atRest" == "$UI_tg1" ]
 then
-	targetDir+="/t1/"
+        targetDir+="/t1/"
 else
-	targetDir+="/t2/"
+        targetDir+="/t2/"
 fi
-
 echo $targetDir > targetDir
 #for exc in "p1" "interval" "p2"
 #do
-#	tmp=$targetDir$exc
-#	bash $tmp
+#       tmp=$targetDir$exc
+#       bash $tmp
 #done
-
